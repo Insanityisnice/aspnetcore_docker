@@ -5,11 +5,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Web.Models;
+using Sample.Core.Data;
+using Sample.Core.Models;
 
 namespace Sample.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly MessageContext _context;
+
+        public HomeController(MessageContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -17,7 +26,7 @@ namespace Sample.Web.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = Sample.Core.DataReader.ReadMessage();
+            ViewData["Message"] = _context.Messages.First().Text;
 
             return View();
         }

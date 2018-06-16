@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  web1:
+    image: sample-web
+    build:
+      context: ./Sample.Web/
+      dockerfile: nix.dockerfile
+    depends_on:
+      - sql
+    # With this commented out the web1 container is only accessable from other containers.
+    # ports:
+    #   - "8080:80"
+    networks:
+      - snet
+    healthcheck:
+      test: [ "CMD", "curl", "-l", "http://localhost:80" ]
+      interval: 1m
+      retries: 3
+  
+  web2:
+    image: sample-web
+    networks:
+      - snet
+    healthcheck:
+      test: [ "CMD", "curl", "-l", "http://localhost:80" ]
+      interval: 1m
+      retries: 3
+
+  lb:
+    image: nginx:1.13-alpine
+    depends_on:
+      - web1
+      - web2
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
+    networks:
+      - snet
+
+  sql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      - SA_PASSWORD=Password1 
+      - ACCEPT_EULA=Y
+    volumes:
+      - ./mssql:/var/opt/mssql
+    # remove the port to isolate the sql server inside the network.
+    ports:
+      - "1433:1433"
+    networks:
+      - snet
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password1", "-Q", "select 1" ]
+      interval: 1m
+      retries: 3
+
+networks:
+  snet:
+    driver: bridge

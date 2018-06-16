@@ -5,6 +5,10 @@ project.lock.json
 *.pyc
 nupkg/
 
+# Solution Related
+mssql/**
+!mssql/createdbs.sql
+
 # Visual Studio Code
 # .vscode
 
