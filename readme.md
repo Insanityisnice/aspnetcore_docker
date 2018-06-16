@@ -1,18 +1,23 @@
-# Building
+# Tools
+## Required
+* [dotnet core 2.1](https://www.microsoft.com/net/learn/get-started/windows#windowscmd)
+* [docker](https://www.docker.com)
+
+# Building the Solution
 Using the commandline from the solution folder.
 
-## Build the solution
+## Build
 > dotnet build
 
-## Publish the solution
+## Publish
 > dotnet publish
 
-# Running
+# Running the Solution
 ## *NIX
 ### Build the docker containers 
 > docker-compose -p sample -f docker-compose.nix.yml build
 
-### Running the docker containers
+### Runn the docker containers
 #### Run without an attached terminal (no logs display)
 > docker-compose -p sample -f docker-compose.nix.yml up -d
 
@@ -20,13 +25,13 @@ Using the commandline from the solution folder.
 > docker-compose -p sample -f docker-compose.nix.yml up
 
 #### The first time you run create the sample database
-> docker exec sample_sql_1 "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1 -i /var/opt/mssql/createdbs.sql"
+> docker exec sample_sql_1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1 -i /var/opt/mssql/createdbs.sql
 
 ## WIN (Still in progress)
-### Building the docker container
+### Build the docker container
 > docker-compose -p sample -f docker-compose.win.yml build
 
-### Running the docker containers
+### Run the docker containers
 #### Run without an attached terminal (no logs display)
 > docker-compose -p sample -f docker-compose.win.yml up -d
 
