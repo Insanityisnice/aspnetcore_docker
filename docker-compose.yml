@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  sample:
+    image: sample-web
+    build:
+      context: ./Sample.Web/
+      dockerfile: dockerfile
+    ports:
+      - "4662:80"
+
+networks:
+  sample:
