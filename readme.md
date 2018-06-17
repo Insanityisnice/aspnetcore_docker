@@ -25,7 +25,10 @@ Using the commandline from the solution folder.
 > docker-compose -p sample -f docker-compose.nix.yml up
 
 #### The first time you run create the sample database
-> docker exec sample_sql_1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1 -i /var/opt/mssql/createdbs.sql
+> docker exec sample_sql_1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1 -i /var/opt/mssql/createdbs.nix.sql
+
+### Cleanup
+> docker-compose -p sample -f docker-compose.nix.yml  down
 
 ## WIN (Still in progress)
 ### Build the docker container
@@ -37,3 +40,9 @@ Using the commandline from the solution folder.
 
 #### Run without an attached terminal (logs display in terminal)
 > docker-compose -p sample -f docker-compose.win.yml up
+
+#### The first time you run create the sample database
+> docker exec sample_sql_1 sqlcmd -S localhost -U sa -P Password1 -i C:\\temp\\createdbs.win.sql
+
+### Cleanup
+> docker-compose -p sample -f docker-compose.win.yml  down

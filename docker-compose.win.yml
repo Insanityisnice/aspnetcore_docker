@@ -1,22 +1,63 @@
 version: "3"
 services:
+  web1:
+    image: sample-web
+    build:
+      context: ./Sample.Web
+      dockerfile: win.dockerfile
+    depends_on:
+      - sql
+    networks:
+      - snet
+    healthcheck:
+      test: [ "CMD", "curl", "-l", "http://localhost:80" ]
+      interval: 1m
+      retries: 3
+
+  web2:
+    image: sample-web
+    depends_on:
+      - sql
+    networks:
+      - snet
+    healthcheck:
+      test: [ "CMD", "curl", "-l", "http://localhost:80" ]
+      interval: 1m
+      retries: 3
+
+  lb:
+    image: nginx-nanoserver
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    depends_on:
+      - web1
+      - web2
+    ports:
+      - 8080:80
+    networks:
+      - snet
+
   sql:
     image: microsoft/mssql-server-windows-developer
     environment:
-      - sa_password=Password1 
+      - SA_PASSWORD=Password1 
       - ACCEPT_EULA=Y
-      - attach_dbs=[{'dbName':'ASPState','dbFiles':['C:\\temp\\ASPState.mdf','C:\\temp\\ASPState_log.ldf']}, {'dbName':'EngagementCenterDb','dbFiles':['C:\\temp\\DEVFARM_EC2.mdf','C:\\temp\\DEVFARM_EC2_log.ldf']}]
     volumes:
-      - C:/temp/:C:/temp/
+      - ./mssql:C:/temp
     ports:
       - "1433:1433"
+    networks:
+      - snet
     healthcheck:
       test: [ "CMD", "sqlcmd", "-U", "sa", "-P", "Password1", "-Q", "select 1" ]
-      interval: 1s
-      retries: 30
+      interval: 1m
+      retries: 3
 
-# Required for bug in windows containers on older versions.
+# default required for bug in windows containers on older versions.
 networks:
   default:
     external:
       name: nat
+  snet:
+    driver: nat
