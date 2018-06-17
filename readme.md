@@ -30,7 +30,7 @@ Using the commandline from the solution folder.
 ### Cleanup
 > docker-compose -p sample -f docker-compose.nix.yml  down
 
-## WIN (Still in progress)
+## WIN
 ### Build the docker container
 > docker-compose -p sample -f docker-compose.win.yml build
 
